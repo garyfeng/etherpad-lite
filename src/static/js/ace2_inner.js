@@ -369,6 +369,19 @@ function Ace2Inner(){
     return thisAuthor;
   }
 
+  var _nonScrollableEditEvents = {
+    "applyChangesToBase": 1
+  };
+
+  _.each(hooks.callAll('aceRegisterNonScrollableEditEvents'), function(eventType) {
+      _nonScrollableEditEvents[eventType] = 1;
+  });
+
+  function isScrollableEditEvent(eventType)
+  {
+    return !_nonScrollableEditEvents[eventType];
+  }
+
   var currentCallStack = null;
 
   function inCallStack(type, action)
@@ -506,7 +519,7 @@ function Ace2Inner(){
           {
             updateBrowserSelectionFromRep();
           }
-          if ((cs.docTextChanged || cs.userChangedSelection) && cs.type != "applyChangesToBase")
+          if ((cs.docTextChanged || cs.userChangedSelection) && isScrollableEditEvent(cs.type))
           {
             scrollSelectionIntoView();
           }
@@ -1442,16 +1455,6 @@ function Ace2Inner(){
     var selection = getSelection();
     p.end();
 
-    function topLevel(n)
-    {
-      if ((!n) || n == root) return null;
-      while (n.parentNode != root)
-      {
-        n = n.parentNode;
-      }
-      return n;
-    }
-
     if (selection)
     {
       var node1 = topLevel(selection.startPoint.node);
@@ -1473,12 +1476,8 @@ function Ace2Inner(){
       var nds = root.getElementsByTagName("style");
       for (var i = 0; i < nds.length; i++)
       {
-        var n = nds[i];
-        while (n.parentNode && n.parentNode != root)
-        {
-          n = n.parentNode;
-        }
-        if (n.parentNode == root)
+        var n = topLevel(nds[i]);
+        if (n && n.parentNode == root)
         {
           observeChangesAroundNode(n);
         }
@@ -2338,8 +2337,17 @@ function Ace2Inner(){
   editorInfo.ace_setAttributeOnSelection = setAttributeOnSelection;
 
 
-  function getAttributeOnSelection(attributeName){
+  function getAttributeOnSelection(attributeName, prevChar){
     if (!(rep.selStart && rep.selEnd)) return
+    var isNotSelection = (rep.selStart[0] == rep.selEnd[0] && rep.selEnd[1] === rep.selStart[1]);
+    if(isNotSelection){
+      if(prevChar){
+        // If it's not the start of the line
+        if(rep.selStart[1] !== 0){
+          rep.selStart[1]--;
+        }
+      }
+    }
 
     var withIt = Changeset.makeAttribsString('+', [
       [attributeName, 'true']
@@ -5012,6 +5020,23 @@ function Ace2Inner(){
       if(e.target.a || e.target.localName === "a"){
         e.preventDefault();
       }
+
+      // Bug fix: when user drags some content and drop it far from its origin, we
+      // need to merge the changes into a single changeset. So mark origin with <style>,
+      // in order to make content be observed by incorporateUserChanges() (see
+      // observeSuspiciousNodes() for more info)
+      var selection = getSelection();
+      if (selection){
+        var firstLineSelected = topLevel(selection.startPoint.node);
+        var lastLineSelected  = topLevel(selection.endPoint.node);
+
+        var lineBeforeSelection = firstLineSelected.previousSibling;
+        var lineAfterSelection  = lastLineSelected.nextSibling;
+
+        var neighbor = lineBeforeSelection || lineAfterSelection;
+        neighbor.appendChild(document.createElement('style'));
+      }
+
       // Call drop hook
       hooks.callAll('aceDrop', {
         editorInfo: editorInfo,
@@ -5027,6 +5052,16 @@ function Ace2Inner(){
       $(document.documentElement).on("compositionstart", handleCompositionEvent);
       $(document.documentElement).on("compositionend", handleCompositionEvent);
     }
+  }
+
+  function topLevel(n)
+  {
+    if ((!n) || n == root) return null;
+    while (n.parentNode != root)
+    {
+      n = n.parentNode;
+    }
+    return n;
   }
 
   function handleIEOuterClick(evt)
@@ -5365,6 +5400,12 @@ function Ace2Inner(){
         level = Number(listType[2]);
       }
       var t = getLineListType(n);
+
+      // if already a list, deindent
+      if (allLinesAreList && level != 1) { level = level - 1;  }
+      // if already indented, then add a level of indentation to the list
+      else if (t && !allLinesAreList) { level = level + 1; }
+
       mods.push([n, allLinesAreList ? 'indent' + level : (t ? type + level : type + '1')]);
     }
 
@@ -5418,7 +5459,16 @@ function Ace2Inner(){
           // and the line-numbers don't line up unless we pay
           // attention to where the divs are actually placed...
           // (also: padding on TTs/SPANs in IE...)
-          h = b.nextSibling.offsetTop - b.offsetTop;
+          if (b === doc.body.firstChild) {
+            // It's the first line. For line number alignment purposes, its
+            // height is taken to be the top offset of the next line. If we
+            // didn't do this special case, we would miss out on any top margin
+            // included on the first line. The default stylesheet doesn't add
+            // extra margins, but plugins might.
+            h = b.nextSibling.offsetTop;
+          } else {
+            h = b.nextSibling.offsetTop - b.offsetTop;
+          }
         }
         if (h)
         {
