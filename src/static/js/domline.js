@@ -193,7 +193,8 @@ domline.createDomLine = function(nonEmpty, doesWrap, optBrowser, optDocument)
     {
       if (href)
       {
-        if(!~href.indexOf("://") && !~href.indexOf("mailto:")) // if the url doesn't include a protocol prefix, assume http
+        urn_schemes = new RegExp("^(about|geo|mailto|tel):");
+        if(!~href.indexOf("://") && !urn_schemes.test(href)) // if the url doesn't include a protocol prefix, assume http
         {
           href = "http://"+href;
         }
@@ -213,7 +214,7 @@ domline.createDomLine = function(nonEmpty, doesWrap, optBrowser, optDocument)
   result.clearSpans = function()
   {
     html = [];
-    lineClass = ''; // non-null to cause update
+    lineClass = 'ace-line';
     result.lineMarker = 0;
   };
 

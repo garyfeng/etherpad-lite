@@ -15,7 +15,8 @@
 			"Fasouzafreitas",
 			"Lpagliari",
 			"Walesson",
-			"Cainamarques"
+			"Cainamarques",
+			"Eduardo Addad de Oliveira"
 		]
 	},
 	"index.newPad": "Nova Nota",
@@ -66,10 +67,12 @@
 	"pad.importExport.exportword": "Microsoft Word",
 	"pad.importExport.exportpdf": "PDF",
 	"pad.importExport.exportopen": "ODF (Open Document Format)",
-	"pad.importExport.abiword.innerHTML": "Você só pode importar de formatos de texto puro ou html. Para recursos de importação mais avançados <a href=\"https://github.com/ether/etherpad-lite/wiki/How-to-enable-importing-and-exporting-different-file-formats-in-Ubuntu-or-OpenSuse-or-SLES-with-AbiWord\">instale o abiword</a>.",
+	"pad.importExport.abiword.innerHTML": "Só é possível importar texto sem formatação ou HTML. Para obter funcionalidades de importação mais avançadas, por favor <a href=\"https://github.com/ether/etherpad-lite/wiki/How-to-enable-importing-and-exporting-different-file-formats-with-AbiWord\">instale o AbiWord</a>.",
 	"pad.modals.connected": "Conectado.",
 	"pad.modals.reconnecting": "Reconectando à sua nota...",
 	"pad.modals.forcereconnect": "Forçar reconexão",
+	"pad.modals.reconnecttimer": "Tentando se reconectar",
+	"pad.modals.cancel": "Cancelar",
 	"pad.modals.userdup": "Aberto em outra janela",
 	"pad.modals.userdup.explanation": "Esta nota parece estar aberta em mais de uma janela de navegador deste computador.",
 	"pad.modals.userdup.advice": "Reconectar para usar esta janela.",

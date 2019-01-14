@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sveinn í Felli"
+			"Sveinn í Felli",
+			"Sveinki"
 		]
 	},
 	"index.newPad": "Ný skrifblokk",
@@ -52,10 +53,12 @@
 	"pad.importExport.exportword": "Microsoft Word",
 	"pad.importExport.exportpdf": "PDF",
 	"pad.importExport.exportopen": "ODF (Open Document Format)",
-	"pad.importExport.abiword.innerHTML": "Þú getur aðeins flutt inn úr hreinum texta eða HTML sniðum. Til að geta nýtt \nfleiri þróaðri innflutningssnið <a href=\"https://github.com/ether/etherpad-li\nte/wiki/How-to-e\nnable-importing-and-exporting-different-file-formats-in-Ubuntu-or-OpenSuse-or-\nSLES-with-AbiWord\">settu þá upp abiword forritið</a>.",
+	"pad.importExport.abiword.innerHTML": "Þú getur aðeins flutt inn úr hreinum texta eða HTML sniðum. Til að geta nýtt \nfleiri þróaðri innflutningssnið <a href=\"https://github.com/ether/etherpad-lite/wiki/How-to-enable-importing-and-exporting-different-file-formats-with-AbiWord\">settu þá upp AbiWord forritið</a>.",
 	"pad.modals.connected": "Tengt.",
 	"pad.modals.reconnecting": "Endurtengist skrifblokkinni þinni...",
 	"pad.modals.forcereconnect": "Þvinga endurtengingu",
+	"pad.modals.reconnecttimer": "Reyni aftur að tengjast eftir",
+	"pad.modals.cancel": "Hætta við",
 	"pad.modals.userdup": "Opnað í öðrum glugga",
 	"pad.modals.userdup.explanation": "Þessi skrifblokk virðist vera opin í fleiri en einum vafraglugga á þessari tölvu.",
 	"pad.modals.userdup.advice": "Endurtengdu til að nota þennan glugga í staðinn.",
@@ -92,6 +95,9 @@
 	"timeslider.exportCurrent": "Flytja út núverandi útgáfu sem:",
 	"timeslider.version": "Útgáfa {{version}}",
 	"timeslider.saved": "Vistað {{day}}. {{month}}, {{year}}",
+	"timeslider.playPause": "Afspilun / Hlé á efni skrifblokkar",
+	"timeslider.backRevision": "Fara til baka um eina útgáfu í þessari skrifblokk",
+	"timeslider.forwardRevision": "Fara áfram um eina útgáfu í þessari skrifblokk",
 	"timeslider.dateformat": "{{day}}/{{month}}/{{year}} {{hours}}:{{minutes}}:{{seconds}}",
 	"timeslider.month.january": "Janúar",
 	"timeslider.month.february": "febrúar",

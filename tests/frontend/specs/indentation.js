@@ -15,7 +15,7 @@ describe("indentation button", function(){
     //select this text element
     $firstTextElement.sendkeys('{selectall}');
 
-    if(inner$(window)[0].bowser.firefox || inner$(window)[0].bowser.modernIE){ // if it's a mozilla or IE
+    if(inner$(window)[0].bowser.modernIE){ // if it's IE
       var evtType = "keypress";
     }else{
       var evtType = "keydown";
@@ -139,6 +139,51 @@ describe("indentation button", function(){
       expect($lineAfterColon.text()).to.match(/\s{6}/); // previous line indentation + regular tab (4 spaces)
 
       done();
+    });
+  });
+
+  it("issue #2772 shows '*' when multiple indented lines receive a style and are outdented", function(done){
+    var inner$ = helper.padInner$;
+    var chrome$ = helper.padChrome$;
+
+    // make sure pad has more than one line
+    inner$("div").first().sendkeys("First{enter}Second{enter}");
+    helper.waitFor(function(){
+      return inner$("div").first().text().trim() === "First";
+    }).done(function(){
+      // indent first 2 lines
+      var $lines = inner$("div");
+      var $firstLine = $lines.first();
+      var $secondLine = $lines.slice(1,2);
+      helper.selectLines($firstLine, $secondLine);
+
+      var $indentButton = chrome$(".buttonicon-indent");
+      $indentButton.click();
+
+      helper.waitFor(function(){
+        return inner$("div").first().find("ul li").length === 1;
+      }).done(function(){
+        // apply bold
+        var $boldButton = chrome$(".buttonicon-bold");
+        $boldButton.click();
+
+        helper.waitFor(function(){
+          return inner$("div").first().find("b").length === 1;
+        }).done(function(){
+          // outdent first 2 lines
+          var $outdentButton = chrome$(".buttonicon-outdent");
+          $outdentButton.click();
+          helper.waitFor(function(){
+            return inner$("div").first().find("ul li").length === 0;
+          }).done(function(){
+            // check if '*' is displayed
+            var $secondLine = inner$("div").slice(1,2);
+            expect($secondLine.text().trim()).to.be("Second");
+
+            done();
+          });
+        });
+      });
     });
   });
 
@@ -280,7 +325,7 @@ describe("indentation button", function(){
 
 function pressEnter(){
   var inner$ = helper.padInner$;
-  if(inner$(window)[0].bowser.firefox || inner$(window)[0].bowser.modernIE){ // if it's a mozilla or IE
+  if(inner$(window)[0].bowser.modernIE){ // if it's IE
     var evtType = "keypress";
   }else{
     var evtType = "keydown";

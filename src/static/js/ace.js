@@ -186,7 +186,7 @@ function Ace2Editor()
     }
     for (var i = 0, ii = remoteFiles.length; i < ii; i++) {
       var file = remoteFiles[i];
-      buffer.push('<link rel="stylesheet" type="text/css" href="' + file + '"\/>');
+      buffer.push('<link rel="stylesheet" type="text/css" href="' + encodeURI(file) + '"\/>');
     }
   }
 
@@ -226,8 +226,11 @@ function Ace2Editor()
       var includedCSS = [];
       var $$INCLUDE_CSS = function(filename) {includedCSS.push(filename)};
       $$INCLUDE_CSS("../static/css/iframe_editor.css");
-      $$INCLUDE_CSS("../static/css/pad.css");
-      $$INCLUDE_CSS("../static/custom/pad.css");
+
+      // disableCustomScriptsAndStyles can be used to disable loading of custom scripts
+      if(!clientVars.disableCustomScriptsAndStyles){
+        $$INCLUDE_CSS("../static/css/pad.css");
+      }
 
       var additionalCSS = _(hooks.callAll("aceEditorCSS")).map(function(path){
         if (path.match(/\/\//)) { // Allow urls to external CSS - http(s):// and //some/path.css
@@ -236,6 +239,7 @@ function Ace2Editor()
         return '../static/plugins/' + path;
       });
       includedCSS = includedCSS.concat(additionalCSS);
+      $$INCLUDE_CSS("../static/skins/" + clientVars.skinName + "/pad.css");
 
       pushStyleTagsFor(iframeHTML, includedCSS);
 
@@ -310,7 +314,6 @@ window.onload = function () {\n\
       var $$INCLUDE_CSS = function(filename) {includedCSS.push(filename)};
       $$INCLUDE_CSS("../static/css/iframe_editor.css");
       $$INCLUDE_CSS("../static/css/pad.css");
-      $$INCLUDE_CSS("../static/custom/pad.css");
 
 
       var additionalCSS = _(hooks.callAll("aceEditorCSS")).map(function(path){
@@ -320,12 +323,13 @@ window.onload = function () {\n\
         return '../static/plugins/' + path }
       );
       includedCSS = includedCSS.concat(additionalCSS);
+      $$INCLUDE_CSS("../static/skins/" + clientVars.skinName + "/pad.css");
 
       pushStyleTagsFor(outerHTML, includedCSS);
 
       // bizarrely, in FF2, a file with no "external" dependencies won't finish loading properly
       // (throbs busy while typing)
-      outerHTML.push('<style type="text/css" title="dynamicsyntax"></style>', '<link rel="stylesheet" type="text/css" href="data:text/css,"/>', scriptTag(outerScript), '</head><body id="outerdocbody" class="outerdocbody"><div id="sidediv" class="sidediv"><!-- --></div><div id="linemetricsdiv">x</div></body></html>');
+      outerHTML.push('<style type="text/css" title="dynamicsyntax"></style>', '<link rel="stylesheet" type="text/css" href="data:text/css,"/>', scriptTag(outerScript), '</head><body id="outerdocbody" class="outerdocbody ', hooks.clientPluginNames().join(' '),'"><div id="sidediv" class="sidediv"><!-- --></div><div id="linemetricsdiv">x</div></body></html>');
 
       var outerFrame = document.createElement("IFRAME");
       outerFrame.name = "ace_outer";
