@@ -18,23 +18,30 @@
  * limitations under the License.
  */
 
-
+var absolutePaths = require('../utils/AbsolutePaths');
 var ERR = require("async-stacktrace");
 var fs = require("fs");
 var api = require("../db/API");
+var log4js = require('log4js');
 var padManager = require("../db/PadManager");
 var randomString = require("../utils/randomstring");
+var argv = require('../utils/Cli').argv;
+
+var apiHandlerLogger = log4js.getLogger('APIHandler');
 
 //ensure we have an apikey
 var apikey = null;
+var apikeyFilename = absolutePaths.makeAbsolute(argv.apikey || "./APIKEY.txt");
 try
 {
-  apikey = fs.readFileSync("./APIKEY.txt","utf8");
+  apikey = fs.readFileSync(apikeyFilename,"utf8");
+  apiHandlerLogger.info(`Api key file read from: "${apikeyFilename}"`);
 }
 catch(e)
 {
+  apiHandlerLogger.info(`Api key file "${apikeyFilename}" not found. Creating with random contents.`);
   apikey = randomString(32);
-  fs.writeFileSync("./APIKEY.txt",apikey,"utf8");
+  fs.writeFileSync(apikeyFilename,apikey,"utf8");
 }
 
 //a list of all functions

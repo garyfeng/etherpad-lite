@@ -3,8 +3,9 @@ html,
 body,
 p {
   margin: 0;
-  padding: 0;
+  padding: 0px;
 }
+
 .clear {
   clear: both
 }
@@ -517,6 +518,23 @@ table#otheruserstable {
   display: block;
 }
 
+/* styles for the automatic reconnection timer: */
+#connectivity .visible.with_reconnect_timer button,
+#connectivity .visible.with_reconnect_timer .reconnecttimer * {
+  display: inline-block;
+}
+
+#connectivity .with_reconnect_timer .hidden,
+#connectivity .with_reconnect_timer #defaulttext.hidden,
+#connectivity .with_reconnect_timer button.hidden {
+  display: none;
+}
+
+#connectivity .with_reconnect_timer #cancelreconnect {
+  margin-left: 10px;
+}
+/* end of styles for the automatic reconnection timer */
+
 #reconnect_form button {
   font-size: 12pt;
   padding: 5px;
@@ -771,6 +789,10 @@ table#otheruserstable {
 .buttonicon::-moz-focus-inner {
   padding: 0;
   border: 0
+}
+
+.buttonicon:before  {
+  font-family: "fontawesome-etherpad";
 }
 
 .buttonicon:focus{
@@ -1054,9 +1076,9 @@ input[type=checkbox] {
       overflow: auto;
     }
     #mycolorpicker {
-      left: -73px;
-      top:auto !important;
-      bottom:33px !important;
+      left: 0px;
+      top:37px !important;
+      position:fixed;
       /* #mycolorpicker: width -#users: width */;
     }
     #editorcontainer {
@@ -1255,10 +1277,40 @@ input[type=checkbox] {
 }
 /* End of gritter stuff */
 
+/* Montserrat Font */
+@font-face {
+  font-family: "Montserrat";
+  src: url("../../static/font/Montserrat-Light.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+    font-family: "Montserrat";
+    src: url("../../static/font/Montserrat-Regular.otf") format("opentype");
+    font-weight: bold;
+    font-style: normal;
+}
+/* End of Monterrat Font */
+
 @font-face {
   font-family: opendyslexic;
   src: url("../../static/font/opendyslexic.otf") format("opentype");
 }
+
+/* Roboto Mono */
+@font-face {
+    font-family: "RobotoMono";
+    src: url("../../static/font/RobotoMono-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "RobotoMono";
+    src: url("../../static/font/RobotoMono-Bold.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+}
+/* End of Roboto Mono */
 
 @font-face {
   font-family: "fontawesome-etherpad";
@@ -1272,19 +1324,7 @@ input[type=checkbox] {
 
 }
 
-[data-icon]:before {
-  font-family: "fontawesome-etherpad" !important;
-  content: attr(data-icon);
-  font-style: normal !important;
-  font-weight: normal !important;
-  font-variant: normal !important;
-  text-transform: none !important;
-  speak: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+[data-icon]:before,
 [class^="icon-"]:before,
 [class*=" icon-"]:before {
   font-family: "fontawesome-etherpad" !important;
@@ -1304,5 +1344,3 @@ input[type=checkbox] {
 .hideControlsEditbar{
   display:none !important;
 }
-
-
